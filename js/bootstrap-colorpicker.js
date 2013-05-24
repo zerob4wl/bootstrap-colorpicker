@@ -197,7 +197,7 @@
                 'mousedown.colorpicker': $.proxy(this.hide, this)
             });
             this.element.trigger({
-                type: 'show',
+                type: 'showPicker',
                 color: this.color
             });
         },
@@ -223,7 +223,10 @@
                     'mousedown': this.hide
                 });
                 if (this.component) {
-                    this.element.find('input').prop('value', this.format.call(this));
+                    //if the input value is empty, do not set any color
+                    if (this.element.find('input').val() !== '') {
+                        this.element.find('input').prop('value', this.format.call(this));
+                    }
                 }
                 this.element.data('color', this.format.call(this));
             } else {
@@ -233,7 +236,7 @@
                 }
             }
             this.element.trigger({
-                type: 'hide',
+                type: 'hidePicker',
                 color: this.color
             });
         },
@@ -340,10 +343,18 @@
             this.previewColor();
 
             // Set input value on mousemove
-            try {
-                this.element.val(this.format.call(this));
-            } catch (e) {
-                this.element.val(this.color.toHex());
+            if (!this.isInput) {
+                try {
+                    this.element.find('input').val(this.format.call(this));
+                } catch (e) {
+                    this.element.find('input').val(this.color.toHex());
+                }
+            }else{
+                try {
+                    this.element.val(this.format.call(this));
+                } catch (e) {
+                    this.element.val(this.color.toHex());
+                }
             }
 
             this.element.trigger({
