@@ -1,26 +1,14 @@
-/* =========================================================
- * bootstrap-colorpicker.js 
- * http://www.eyecon.ro/bootstrap-colorpicker
- * =========================================================
- * Copyright 2012 Stefan Petre
+/*!
+ * Bootstrap Colorpicker
+ * http://mjaalnir.github.io/bootstrap-colorpicker/
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Originally written by (c) 2012 Stefan Petre
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0.txt
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ========================================================= */
-
-!function($) {
-
+ */
+(function($) {
     // Color object
-
     var Color = function(val) {
         this.value = {
             h: 1,
@@ -132,16 +120,33 @@
         this.format = CPGlobal.translateFormats[format];
         this.isInput = this.element.is('input');
         this.component = this.element.is('.colorpicker-component') ? this.element.find('.add-on, .input-group-addon') : false;
+        this.container = options.container || false;
 
         this.picker = $(CPGlobal.template).attr('data-colorpicker-guid', _guid)
-                .appendTo('body')
-                .on('mousedown.colorpicker', $.proxy(this.mousedown, this));
+        if (!this.container) {
+            this.picker.appendTo($('body'));
+        } else {
+            this.picker.appendTo(this.container);
+            this.picker.addClass('colorpicker-inline');
+        }
+
+        this.picker.on('mousedown.colorpicker', $.proxy(this.mousedown, this));
+
+        this.isHorizontal = options.horizontal;
+        if (this.isHorizontal) {
+            this.picker.addClass('colorpicker-horizontal');
+        }
 
         if (this.isInput) {
             this.element.on({
                 'focus.colorpicker': $.proxy(this.show, this),
                 'keyup.colorpicker': $.proxy(this.update, this)
             });
+            if (!this.element.hasClass('colorpicker-inline')) {
+                this.element.on({
+                    'focusout.colorpicker': $.proxy(this.hide, this)
+                });
+            }
         } else if (this.component) {
             this.component.on({
                 'click.colorpicker': $.proxy(this.show, this)
@@ -242,13 +247,14 @@
             if (this.component !== false) {
                 this.component.off('.colorpicker');
             }
+            this.element.removeClass('colorpicker-element');
             this.element.trigger("destroy", [this]);
         },
         setValue: function(value) {
             // set the input or component value
-            if(this.isInput){
+            if (this.isInput) {
                 this.element.prop('value', value);
-            }else{
+            } else {
                 this.element.find('input').val(value);
                 this.element.data('color', value);
             }
@@ -283,14 +289,15 @@
             //detect the slider and set the limits and callbacks
             var zone = target.closest('div');
             if (!zone.is('.colorpicker')) {
+                var sliderOptions = this.isHorizontal ? CPGlobal.slidersHorizontal : CPGlobal.sliders;
                 if (zone.is('.colorpicker-saturation')) {
-                    this.slider = $.extend({}, CPGlobal.sliders.saturation);
+                    this.slider = $.extend({}, sliderOptions.saturation);
                 }
                 else if (zone.is('.colorpicker-hue')) {
-                    this.slider = $.extend({}, CPGlobal.sliders.hue);
+                    this.slider = $.extend({}, sliderOptions.hue);
                 }
                 else if (zone.is('.colorpicker-alpha')) {
-                    this.slider = $.extend({}, CPGlobal.sliders.alpha);
+                    this.slider = $.extend({}, sliderOptions.alpha);
                 } else {
                     return false;
                 }
@@ -377,7 +384,7 @@
                     options = typeof option === 'object' && option;
             if (!data) {
                 if (option !== "destroy") {
-                    $this.data('colorpicker', (data = new Colorpicker(this, $.extend({}, $.fn.colorpicker.defaults, options))));
+                    $this.addClass('colorpicker-element').data('colorpicker', (data = new Colorpicker(this, $.extend({}, $.fn.colorpicker.defaults, options))));
                 }
             } else {
                 if (typeof option === 'string') {
@@ -413,6 +420,26 @@
             },
             'hex': function() {
                 return  this.color.toHex();
+            }
+        },
+        slidersHorizontal: {
+            saturation: {
+                maxLeft: 100,
+                maxTop: 100,
+                callLeft: 'setSaturation',
+                callTop: 'setLightness'
+            },
+            hue: {
+                maxLeft: 100,
+                maxTop: 0,
+                callLeft: 'setHue',
+                callTop: false
+            },
+            alpha: {
+                maxLeft: 100,
+                maxTop: 0,
+                callLeft: 'setAlpha',
+                callTop: false
             }
         },
         sliders: {
@@ -558,4 +585,4 @@
                 '</div>'
     };
 
-}(window.jQuery);
+})(window.jQuery);

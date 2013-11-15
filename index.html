@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <title>Colorpicker for Twitter Bootstrap</title>
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-        <link href="./css/bootstrap-colorpicker.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-colorpicker.css" rel="stylesheet">
         <style>
             .container {
                 background: #fff;
@@ -114,6 +114,17 @@
                         <div class="well">
                             <a href="#" class="btn small bscp" id="cp4" data-color-format="hex" data-color="rgb(255, 255, 255)">Change background color</a>
                         </div>
+                        <p>Inline mode</p>
+                        <div class="well">
+                            <div id="cp6">
+
+                            </div>
+                        </div>
+                        <p>Horizonal mode</p>
+                        <div class="well">
+                            <input type="text" class="form-control bscp" value="#8fff00" id="cp5" >
+                        </div>
+                        
                         <a class="btn btn-default bscp-destroy" href="#"><i class="glyphicon glyphicon-remove"></i> Destroy plugin instances</a>
                         <a class="btn btn-default bscp-create" href="#"><i class="glyphicon glyphicon-plus"></i> Create instances again</a>
                         <hr>
@@ -136,6 +147,18 @@
                                     <td>string</td>
                                     <td>'hex'</td>
                                     <td>the color format - hex | rgb | rgba.</td>
+                                </tr>
+                                <tr>
+                                    <td>container</td>
+                                    <td>jQuery Element</td>
+                                    <td>false</td>
+                                    <td>specify this value to put the colorpicker in a standalone component</td>
+                                </tr>
+                                <tr>
+                                    <td>horizontal</td>
+                                    <td>boolean</td>
+                                    <td>false</td>
+                                    <td>whether to render the colorpicker selectors in horizontal mode</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -223,9 +246,9 @@ $(&#039;.my-colorpicker-control&#039;).colorpicker().on(&#039;changeColor&#039;,
         </div>
         <script src="//cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.js"></script>
         <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-        <script src="./js/bootstrap-colorpicker.js"></script>
-        <script src="./js/commits.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script src="js/bootstrap-colorpicker.js"></script>
+        <script src="js/commits.js"></script>
         <script>
             $(function() {
                 // pretify code samples
@@ -241,6 +264,15 @@ $(&#039;.my-colorpicker-control&#039;).colorpicker().on(&#039;changeColor&#039;,
                     var bodyStyle = $('body')[0].style;
                     $('#cp4').colorpicker().on('changeColor', function(ev) {
                         bodyStyle.backgroundColor = ev.color.toHex();
+                    });
+
+                    $('#cp5').colorpicker({
+                        format: 'rgba',
+                        horizontal: true
+                    });
+
+                    $('#cp6').colorpicker({
+                        container: $('#cp6')
                     });
                 }
 
