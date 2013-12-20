@@ -140,7 +140,7 @@
             this.element.trigger('create');
         }, this));
     };
-    
+
     Colorpicker.version = '2.0.0-beta';
 
     Colorpicker.Color = Color;
@@ -178,10 +178,11 @@
             this.picker.addClass('colorpicker-visible').removeClass('colorpicker-hidden');
             this.reposition();
             $(window).on('resize.colorpicker', $.proxy(this.reposition, this));
-            if (!this.hasInput() && (e !== undefined)) {
-
-                e.stopPropagation();
-                e.preventDefault();
+            if (!this.hasInput() && e) {
+                if (e.stopPropagation && e.preventDefault) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
             }
             if (this.options.inline === false) {
                 $(window.document).on({
@@ -431,6 +432,8 @@
     $.colorpicker = Colorpicker;
 
     $.fn.colorpicker = function(option) {
+        var pickerArgs = arguments;
+
         return this.each(function() {
             var $this = $(this),
                 inst = $this.data('colorpicker'),
@@ -439,7 +442,7 @@
                 $this.data('colorpicker', new Colorpicker(this, options));
             } else {
                 if (typeof option === 'string') {
-                    inst[option].apply(inst, Array.prototype.slice.call(arguments, 1));
+                    inst[option].apply(inst, Array.prototype.slice.call(pickerArgs, 1));
                 }
             }
         });
